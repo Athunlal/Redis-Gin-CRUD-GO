@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"fmt"
+
 	"github.com/athunlal/Redis-Gin-CRUD-Go/pkg/domain"
 	repository_interfaces "github.com/athunlal/Redis-Gin-CRUD-Go/pkg/repository/repository_interface"
 	"github.com/athunlal/Redis-Gin-CRUD-Go/pkg/usecase/usecase_interface"
@@ -12,6 +14,7 @@ type User_usecase struct {
 
 // Create implements usecase_interface.User_usecase_interface.
 func (r *User_usecase) Create(user *domain.User) error {
+	fmt.Println("reached here ===============>>>>>>>>>>>.")
 	if err := r.Repo.Create(user); err != nil {
 		return err
 	}
