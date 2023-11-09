@@ -8,8 +8,9 @@ func RespondWithError(ctx *gin.Context, statusCode int, err error) {
 	})
 }
 
-func RespondWithSuccess(ctx *gin.Context, message string) {
+func RespondWithSuccess(ctx *gin.Context, message string, data any) {
 	ctx.JSON(200, gin.H{
 		"Message": message,
+		"Data":    data,
 	})
 }

@@ -1,7 +1,8 @@
 package repository
 
 import (
-	"fmt"
+	"context"
+	"encoding/json"
 
 	"github.com/athunlal/Redis-Gin-CRUD-Go/pkg/domain"
 	repository_interfaces "github.com/athunlal/Redis-Gin-CRUD-Go/pkg/repository/repository_interface"
@@ -9,45 +10,67 @@ import (
 )
 
 type User_repo struct {
-	Db *redis.Client
+	Db  *redis.Client
+	ctx context.Context
+}
+
+func (db *User_repo) Delete(username string) error {
+	_, err := db.Db.Del(db.ctx, username).Result()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (db *User_repo) Get(username string) (*domain.User, error) {
+	ctx := context.Background()
+
+	// Get user data from Redis
+	userData, err := db.Db.HGetAll(ctx, username).Result()
+	if err != nil {
+		return nil, err
+	}
+
+	// Unmarshal the user data
+	var user domain.User
+	if err := json.Unmarshal([]byte(userData["data"]), &user); err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 // Update implements repository_interfaces.User_repo_interface.
 func (db *User_repo) Update(user *domain.User) error {
-
-	// Marshal user data
 	userData, err := user.MarshalBinary()
 	if err != nil {
 		return err
 	}
 
-	// Update the user data in Redis with a key based on the username
-	err = db.Db.HMSet(db.Dbcontext(), user.UserName, "data", userData).Err()
+	err = db.Db.HMSet(db.ctx, user.UserName, "data", userData).Err()
 	if err != nil {
-		fmt.Println("Error updating user:", err)
 		return err
 	}
-	fmt.Println("User updated:", user.UserName)
 	return nil
 }
 
 // Create implements repository_interfaces.User_repo_interface.
 func (db *User_repo) Create(user *domain.User) error {
-
 	userData, err := user.MarshalBinary()
 	if err != nil {
 		return err
 	}
 
-	err = db.Db.HMSet(db.Dbcontext(), user.UserName, "data", userData).Err()
+	err = db.Db.HMSet(db.ctx, user.UserName, "data", userData).Err()
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func NewRepository(db *redis.Client) repository_interfaces.User_repo_interface {
+func NewRepository(db *redis.Client, Ctx context.Context) repository_interfaces.User_repo_interface {
 	return &User_repo{
-		Db: db,
+		Db:  db,
+		ctx: Ctx,
 	}
 }

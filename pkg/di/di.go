@@ -11,8 +11,8 @@ import (
 )
 
 func InitApi() *gin.Engine {
-	client := db.ConnectDB()
-	repo := repository.NewRepository(client)
+	client, ctx := db.ConnectDB()
+	repo := repository.NewRepository(client, ctx)
 	useCase := usecase.NewUseCase(repo)
 	handler := handler.NewUserhandler(useCase)
 	route := server.HttpServer()

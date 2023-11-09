@@ -10,6 +10,21 @@ type User_usecase struct {
 	Repo repository_interfaces.User_repo_interface
 }
 
+// Delete implements usecase_interface.User_usecase_interface.
+func (r *User_usecase) Delete(username string) error {
+	return r.Repo.Delete(username)
+}
+
+// Get implements usecase_interface.User_usecase_interface.
+func (r *User_usecase) Get(username string) (*domain.User, error) {
+	return r.Repo.Get(username)
+}
+
+// Update implements usecase_interface.User_usecase_interface.
+func (r *User_usecase) Update(user *domain.User) error {
+	return r.Repo.Update(user)
+}
+
 // Create implements usecase_interface.User_usecase_interface.
 func (r *User_usecase) Create(user *domain.User) error {
 	if err := r.Repo.Create(user); err != nil {

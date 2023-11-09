@@ -1,12 +1,16 @@
 package db
 
-import "github.com/go-redis/redis/v8"
+import (
+	"context"
 
-func ConnectDB() *redis.Client {
+	"github.com/go-redis/redis/v8"
+)
+
+func ConnectDB() (*redis.Client, context.Context) {
 	client := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379", // Redis server address
 		Password: "",               // No password by default
 		DB:       0,                // Default DB
 	})
-	return client
+	return client, context.Background()
 }
