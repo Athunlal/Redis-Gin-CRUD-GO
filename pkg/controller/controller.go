@@ -1,16 +1,14 @@
 package controller
 
 import (
-	"github.com/athunlal/Redis-Gin-CRUD-Go/pkg/controller/handler"
+	"github.com/athunlal/Redis-Gin-CRUD-Go/pkg/controller/handler/handler_interface"
 	"github.com/gin-gonic/gin"
 )
 
 type User_controller struct {
-	handler.User_handler
 }
 
-func NewRouter(r *gin.Engine) {
-	user := &User_controller{}
+func NewRouter(handler handler_interface.User_handler_interface, r *gin.Engine) {
 
-	r.POST("/user", user.Create)
+	r.POST("/user", handler.Create)
 }

@@ -14,8 +14,8 @@ func InitApi() *gin.Engine {
 	client := db.ConnectDB()
 	repo := repository.NewRepository(client)
 	useCase := usecase.NewUseCase(repo)
-	handler.NewUserhandler(useCase)
+	handler := handler.NewUserhandler(useCase)
 	route := server.HttpServer()
-	controller.NewRouter(route)
+	controller.NewRouter(handler, route)
 	return route
 }
